@@ -22,7 +22,7 @@ func (m model) View() string {
 			output += fmt.Sprintf("    %-67s\n", coin.Name)
 		}
 	}
-	output += fmt.Sprintf("%75s\n", fmt.Sprintf("Updated: %s\n", m.coins[0].LastUpdated))
+	output += fmt.Sprintf("%75s\n", fmt.Sprintf("Updated: %s\n", m.coins[0].LastUpdated.Local()))
 	output += fmt.Sprintf("%-75s", aurora.Gray(15, fmt.Sprintf("\n[q: Exit]  [▲/▼: Scroll]  [+/-: Height]")).String())
 	return output
 }
