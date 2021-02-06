@@ -8,4 +8,4 @@ Terminal crypto currency tracker
 
 ## About this Project
 
-This project was created to play around with the bubbletea package for creating terminal user interfaces.
+This project was created to play around and collect some experience with the [bubbletea framework](https://github.com/charmbracelet/bubbletea) for creating terminal user interfaces.
