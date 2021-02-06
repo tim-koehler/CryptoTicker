@@ -4,6 +4,9 @@ go 1.15
 
 require (
 	github.com/charmbracelet/bubbletea v0.12.4
-	github.com/fatih/color v1.10.0
-	github.com/logrusorgru/aurora/v3 v3.0.0
+	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
+	github.com/muesli/termenv v0.7.4
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
+	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
+	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 )

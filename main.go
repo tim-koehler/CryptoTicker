@@ -6,6 +6,7 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/muesli/termenv"
 )
 
 var (
@@ -21,6 +22,8 @@ type model struct {
 	width  int
 	coins  Coins
 }
+
+var term = termenv.ColorProfile()
 
 func main() {
 	m := model{
