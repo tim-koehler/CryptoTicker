@@ -13,7 +13,7 @@ var (
 	apiEndpoint    = "https://api.coingecko.com/api/v3/coins/markets"
 	defaultHeight  = 10
 	minHeight      = 5
-	fiatCurrencies = []string{"eur", "usd"}
+	fiatCurrencies = []string{"usd", "eur"}
 )
 
 type tickMsg int
