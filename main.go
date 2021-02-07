@@ -10,27 +10,30 @@ import (
 )
 
 var (
-	apiEndpoint   = "https://api.coingecko.com/api/v3/coins/markets"
-	defaultHeight = 10
-	minHeight     = 5
+	apiEndpoint    = "https://api.coingecko.com/api/v3/coins/markets"
+	defaultHeight  = 10
+	minHeight      = 5
+	fiatCurrencies = []string{"eur", "usd"}
 )
 
 type tickMsg int
 type model struct {
-	height int
-	cursor int
-	width  int
-	coins  Coins
+	height    int
+	cursor    int
+	width     int
+	fiatIndex int
+	coins     Coins
 }
 
 var term = termenv.ColorProfile()
 
 func main() {
 	m := model{
-		height: defaultHeight,
-		cursor: 0,
-		width:  0,
-		coins:  nil,
+		height:    defaultHeight,
+		cursor:    0,
+		width:     0,
+		fiatIndex: 0,
+		coins:     nil,
 	}
 
 	if err := tea.NewProgram(m).Start(); err != nil {

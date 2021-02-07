@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -15,7 +16,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tickMsg:
 		coins := Coins{}
-		rawData, err := fetchFromAPI()
+		rawData, err := fetchFromAPI(fiatCurrencies[m.fiatIndex])
 		if err != nil {
 			return m, tick()
 		}
@@ -44,6 +45,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			m.cursor++
 			return m, tick()
+		case "left":
+			if m.fiatIndex == 0 {
+				return m, tick()
+			}
+			m.fiatIndex--
+			return m, tea.Tick(time.Duration(0), func(t time.Time) tea.Msg {
+				return tickMsg(1)
+			})
+		case "right":
+			if m.fiatIndex >= len(fiatCurrencies)-1 {
+				return m, tick()
+			}
+			m.fiatIndex++
+			return m, tea.Tick(time.Duration(0), func(t time.Time) tea.Msg {
+				return tickMsg(1)
+			})
 		case "+":
 			if m.height > len(m.coins)-1 {
 				return m, tick()
@@ -63,7 +80,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func fetchFromAPI() ([]byte, error) {
+func fetchFromAPI(fiatCurrency string) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
@@ -71,7 +88,7 @@ func fetchFromAPI() ([]byte, error) {
 	}
 
 	q := url.Values{}
-	q.Add("vs_currency", "eur")
+	q.Add("vs_currency", fiatCurrency)
 	q.Add("order", "market_cap_desc")
 	q.Add("per_page", "15")
 	q.Add("page", "1")
