@@ -36,14 +36,14 @@ func main() {
 		coins:     nil,
 	}
 
-	if err := tea.NewProgram(m).Start(); err != nil {
+	if err := tea.NewProgram(&m).Start(); err != nil {
 		fmt.Println("Oh no, it didn't work:", err)
 		os.Exit(1)
 	}
 }
 
-func (m model) Init() tea.Cmd {
-	return tea.Tick(time.Duration(time.Microsecond), func(t time.Time) tea.Msg {
+func (m *model) Init() tea.Cmd {
+	return tea.Tick(time.Duration(0), func(t time.Time) tea.Msg {
 		return tickMsg(1)
 	})
 }

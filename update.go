@@ -6,26 +6,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
 	case tickMsg:
-		coins := Coins{}
-		rawData, err := fetchFromAPI(fiatCurrencies[m.fiatIndex])
-		if err != nil {
-			return m, tick()
-		}
-		if err := json.Unmarshal(rawData, &coins); err != nil {
-			fmt.Println(err.Error())
-			return m, tea.Quit
-		}
-
-		m.coins = coins
+		updateModelData(m)
 		return m, tick()
 
 	case tea.WindowSizeMsg:
@@ -34,45 +23,31 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "up":
-			if m.cursor == 0 {
-				return m, tick()
+			if m.cursor > 0 {
+				m.cursor--
 			}
-			m.cursor--
-			return m, tick()
 		case "down":
-			if m.cursor >= len(m.coins)-m.height {
-				return m, tick()
+			if m.cursor < len(m.coins)-m.height {
+				m.cursor++
 			}
-			m.cursor++
-			return m, tick()
 		case "left":
-			if m.fiatIndex == 0 {
-				return m, tick()
+			if m.fiatIndex > 0 {
+				m.fiatIndex--
+				updateModelData(m)
 			}
-			m.fiatIndex--
-			return m, tea.Tick(time.Duration(0), func(t time.Time) tea.Msg {
-				return tickMsg(1)
-			})
 		case "right":
-			if m.fiatIndex >= len(fiatCurrencies)-1 {
-				return m, tick()
+			if m.fiatIndex < len(fiatCurrencies)-1 {
+				m.fiatIndex++
+				updateModelData(m)
 			}
-			m.fiatIndex++
-			return m, tea.Tick(time.Duration(0), func(t time.Time) tea.Msg {
-				return tickMsg(1)
-			})
 		case "+":
-			if m.height > len(m.coins)-1 {
-				return m, tick()
+			if m.height < len(m.coins)-1 {
+				m.height++
 			}
-			m.height++
-			return m, tick()
 		case "-":
-			if m.height == minHeight {
-				return m, tick()
+			if m.height > minHeight {
+				m.height--
 			}
-			m.height--
-			return m, tick()
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
@@ -80,7 +55,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func fetchFromAPI(fiatCurrency string) ([]byte, error) {
+func updateModelData(m *model) {
+	coins := Coins{}
+	rawData, err := callAPI(fiatCurrencies[m.fiatIndex])
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := json.Unmarshal(rawData, &coins); err != nil {
+		fmt.Println(err.Error())
+	}
+	m.coins = coins
+}
+
+func callAPI(fiatCurrency string) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {

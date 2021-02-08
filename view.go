@@ -7,7 +7,7 @@ import (
 	"github.com/muesli/termenv"
 )
 
-func (m model) View() string {
+func (m *model) View() string {
 	if m.coins == nil {
 		return "Loading..."
 	}
