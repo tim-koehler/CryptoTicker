@@ -22,11 +22,11 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "up":
+		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
 			}
-		case "down":
+		case "down", "j":
 			if m.cursor < len(m.coins)-m.height {
 				m.cursor++
 			}
@@ -77,7 +77,7 @@ func callAPI(fiatCurrency string) ([]byte, error) {
 	q := url.Values{}
 	q.Add("vs_currency", fiatCurrency)
 	q.Add("order", "market_cap_desc")
-	q.Add("per_page", "15")
+	q.Add("per_page", "50")
 	q.Add("page", "1")
 	q.Add("sparkline", "false")
 	q.Add("price_change_percentage", "1h,24h,7d,30d")

@@ -11,7 +11,7 @@ import (
 
 var (
 	apiEndpoint    = "https://api.coingecko.com/api/v3/coins/markets"
-	defaultHeight  = 10
+	defaultHeight  = 15
 	minHeight      = 5
 	fiatCurrencies = []string{"usd", "eur"}
 )
